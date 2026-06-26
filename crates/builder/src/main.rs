@@ -157,8 +157,9 @@ fn run() -> Result<()> {
     .context("create the commit")?;
 
     // push to the remote
+    // requires we have access to the SSH agent on our system, not quite sure how to do that yet
 
-    // open PR
+    // open PR to origin master with auto merge and stuff
 
     Ok(())
 }
