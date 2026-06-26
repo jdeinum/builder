@@ -122,6 +122,7 @@ fn run() -> Result<()> {
     index
         .add_all(["."].iter(), IndexAddOption::DEFAULT, None)
         .context("add all files to the index")?;
+    index.write().context("write index to disk")?;
     let sig = repo.signature().context("get stored user details")?;
     let tree = repo
         .find_tree(index.write_tree().context("write tree for index")?)
