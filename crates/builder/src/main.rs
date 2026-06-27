@@ -1,6 +1,9 @@
 use anyhow::{Context, Error, Result};
 use cargo_metadata::{MetadataCommand, semver::Version};
-use git2::{Commit, DiffOptions, IndexAddOption, Oid, Repository, Sort};
+use git2::{
+    Commit, Cred, DiffOptions, IndexAddOption, Oid, PushOptions, RemoteCallbacks, Repository, Sort,
+};
+use octocrab::Octocrab;
 use std::{
     collections::{HashMap, HashSet},
     io::Write,
@@ -38,8 +41,11 @@ fn run() -> Result<()> {
 
     // push to the remote
     // requires we have access to the SSH agent on our system, not quite sure how to do that yet
+    push_current_branch(&repo).context("push current branch")?;
 
     // open PR to origin master with auto merge and stuff
+    // open_pr("jdeinum", "repo", "a branch", "master", "a token")
+    // don't think I can do this with git2, need to do this with octocrab
 
     Ok(())
 }
@@ -343,5 +349,56 @@ fn update_package(ccrate: &Crate) -> Result<()> {
     // generate the changelog entry using git cliff,
     generate_changelog(&selected.to_string(), &ccrate.name).context("generate changelog")?;
 
+    Ok(())
+}
+
+fn push_current_branch(repo: &Repository) -> Result<()> {
+    let head = repo.head().context("get head")?;
+    let branch = head.name().context("get head name")?;
+
+    let mut remote = repo
+        .find_remote("origin")
+        .context("get remote for origin")?;
+
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username, _allowed| {
+        Cred::ssh_key_from_agent(username.unwrap_or("git"))
+    });
+
+    let mut opts = PushOptions::new();
+    opts.remote_callbacks(callbacks);
+
+    // refspec: local:remote
+    let refspec = format!("{branch}:{branch}");
+    remote.push(&[&refspec], Some(&mut opts))?;
+
+    Ok(())
+}
+
+async fn open_pr(
+    username: &str,
+    repo: &str,
+    source_branch: &str,
+    target_branch: &str,
+    token: &str,
+) -> Result<()> {
+    let octocrab = Octocrab::builder()
+        .personal_token(token)
+        .build()
+        .context("build octocrab")?;
+
+    let pr = octocrab
+        .pulls(username, repo)
+        .create("Chore: merging", source_branch, target_branch)
+        .body("A release!")
+        .send()
+        .await
+        .context("create PR")?;
+
+    println!(
+        "Opened PR #{}: {}",
+        pr.number.unwrap(),
+        pr.html_url.unwrap()
+    );
     Ok(())
 }
