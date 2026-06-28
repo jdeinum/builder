@@ -387,6 +387,11 @@ fn push_current_branch(repo: &Repository) -> Result<()> {
 async fn open_pr(username: &str, repo: &Repository, token: &str) -> Result<()> {
     let head = repo.head().context("get branch head")?;
     let branch = git2::Branch::wrap(head);
+    let name = branch
+        .name()
+        .context("get local name")?
+        .ok_or(Error::msg("No branch name"))?;
+
     let upstream = branch.upstream().context("get upstream branch")?;
     let upstream_branch_name = upstream
         .name()
@@ -401,7 +406,7 @@ async fn open_pr(username: &str, repo: &Repository, token: &str) -> Result<()> {
 
     let pr = octocrab
         .pulls(username, "builder")
-        .create("Chore: release", upstream_branch_name, "master")
+        .create("Chore: release", name, "master")
         .body("A release!")
         .send()
         .await
