@@ -1,3 +1,25 @@
+## [0.1.2] - 2026-06-28
+
+### 🚀 Features
+
+- Initial skeleton done
+- Commit range done, changelog next
+- Push maybe done, PR next
+- PR working
+
+### 🐛 Bug Fixes
+
+- Actually use clippy
+- Clippy fixes
+
+### 📚 Documentation
+
+- Update readme so i remember where i was at
+
+### ⚙️ Miscellaneous Tasks
+
+- Clear changelog
+- Changelog + version bump
 ## [0.1.1] - 2026-06-28
 
 ### 🚀 Features
