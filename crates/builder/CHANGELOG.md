@@ -1,3 +1,15 @@
+## [0.1.15] - 2026-06-28
+
+### 🚀 Features
+
+- Push maybe done, PR next
+
+### ⚙️ Miscellaneous Tasks
+
+- Changelog + version bump
+- Changelog + version bump
+- Syncing
+- Testing
 ## [0.1.13] - 2026-06-27
 
 ### 🚀 Features
