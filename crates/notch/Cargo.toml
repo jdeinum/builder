@@ -1,10 +1,10 @@
 [package]
-name = "builder"
+name = "notch"
 version = "0.1.2"
 edition = "2024"
-description = "Simple build tool for rust"
+description = "Version against a ground truth branch on a repo"
 license = "MIT"
-repository = "https://github.com/jdeinum/builder"
+repository = "https://github.com/jdeinum/notch"
 keywords = ["build", "cargo", "versioning", "release", "git"]
 categories = ["development-tools::build-utils", "command-line-utilities"]
 

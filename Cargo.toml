@@ -3,7 +3,7 @@ cargo-features = ["codegen-backend"]
 [workspace]
 resolver = "3"
 members = ["crates/*"]
-default-members = ["crates/builder"]
+default-members = ["crates/notch"]
 
 [workspace.lints.clippy]
 all = "deny"
